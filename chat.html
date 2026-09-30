@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
 <style>
 html, body {
     margin: 0;
@@ -18,24 +17,24 @@ html, body {
     right: 50px;
     bottom: 50px;
     color: white;
-    font: 28px Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="chat">CZEKAM NA WIADOMOŚĆ...</div>
+<div id="chat">CHAT TEST</div>
 
 <script>
 moblin.publish({ videoPlaying: true });
+
 moblin.subscribe({ chat: {} });
 
 moblin.onmessage = function(message) {
-    if (message.chat) {
-        document.getElementById("chat").innerText =
-            JSON.stringify(message.chat);
-    }
+    document.getElementById("chat").innerText =
+        "MESSAGE: " + JSON.stringify(message);
 };
 </script>
 
