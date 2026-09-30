@@ -15,35 +15,110 @@ html, body {
 
 #chat {
     position: absolute;
-    right: 60px;
-    bottom: 60px;
-    width: 800px;
-    color: white;
+    right: 50px;
+    bottom: 50px;
+    width: 600px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
     font-family: Arial, sans-serif;
-    font-size: 32px;
-    font-weight: 600;
-    text-shadow: 2px 2px 4px black;
+    font-size: 26px;
+}
+
+.message {
+    width: fit-content;
+    max-width: 100%;
+
+    padding: 10px 16px;
+
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 10px;
+
+    color: white;
+
+    text-shadow: 1px 1px 2px black;
+
+    animation: slideIn 0.2s ease-out;
+}
+
+.username {
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="chat">CHAT TEST</div>
+<div id="chat"></div>
 
 <script>
-moblin.publish({ videoPlaying: true });
 
-moblin.subscribe({ chat: {} });
+moblin.publish({
+    videoPlaying: true
+});
+
+moblin.subscribe({
+    chat: {}
+});
+
+const chat = document.getElementById("chat");
 
 moblin.onmessage = function(message) {
 
-    if (message.chat !== undefined) {
+    if (!message.chat) {
+        return;
+    }
 
-        document.getElementById("chat").innerText =
-            JSON.stringify(message.chat);
+    const username = message.chat.user || "User";
+
+    const text = message.chat.segments
+        .map(function(segment) {
+            return segment.text || "";
+        })
+        .join("");
+
+    if (!text) {
+        return;
+    }
+
+    const messageElement = document.createElement("div");
+
+    messageElement.className = "message";
+
+    messageElement.innerHTML =
+        '<span class="username">' +
+        escapeHtml(username) +
+        '</span>' +
+        escapeHtml(text);
+
+    chat.appendChild(messageElement);
+
+    while (chat.children.length > 6) {
+        chat.removeChild(chat.firstChild);
     }
 };
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 </script>
 
 </body>
