@@ -2,9 +2,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <style>
 html, body {
     margin: 0;
+    padding: 0;
     width: 1920px;
     height: 1080px;
     background: transparent;
@@ -15,14 +17,22 @@ html, body {
     position: absolute;
     right: 60px;
     bottom: 60px;
+    width: 600px;
+
     color: white;
-    font: 32px Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+
+    text-shadow:
+        2px 2px 4px rgba(0,0,0,0.9);
 }
 </style>
 </head>
 
 <body>
-<div id="chat">CHAT TEST</div>
+
+<div id="chat"></div>
 
 <script>
 moblin.publish({ videoPlaying: true });
@@ -30,12 +40,21 @@ moblin.publish({ videoPlaying: true });
 moblin.subscribe({ chat: {} });
 
 moblin.onmessage = function(message) {
+
     if (message.chat !== undefined) {
-        document.getElementById("chat").innerText =
+
+        const text =
             message.chat.user + ": " +
-            message.chat.segments.map(x => x.text || "").join("");
+            message.chat.segments
+                .map(function(segment) {
+                    return segment.text || "";
+                })
+                .join("");
+
+        document.getElementById("chat").innerText = text;
     }
 };
 </script>
+
 </body>
 </html>
