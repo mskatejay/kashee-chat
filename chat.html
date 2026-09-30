@@ -17,22 +17,19 @@ html, body {
     position: absolute;
     right: 60px;
     bottom: 60px;
-    width: 600px;
-
+    width: 800px;
     color: white;
     font-family: Arial, sans-serif;
     font-size: 32px;
     font-weight: 600;
-
-    text-shadow:
-        2px 2px 4px rgba(0,0,0,0.9);
+    text-shadow: 2px 2px 4px black;
 }
 </style>
 </head>
 
 <body>
 
-<div id="chat"></div>
+<div id="chat">CHAT TEST</div>
 
 <script>
 moblin.publish({ videoPlaying: true });
@@ -43,15 +40,8 @@ moblin.onmessage = function(message) {
 
     if (message.chat !== undefined) {
 
-        const text =
-            message.chat.user + ": " +
-            message.chat.segments
-                .map(function(segment) {
-                    return segment.text || "";
-                })
-                .join("");
-
-        document.getElementById("chat").innerText = text;
+        document.getElementById("chat").innerText =
+            JSON.stringify(message.chat);
     }
 };
 </script>
