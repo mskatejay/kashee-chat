@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <style>
 html, body {
     margin: 0;
@@ -16,25 +17,85 @@ html, body {
     position: absolute;
     right: 50px;
     bottom: 50px;
-    color: white;
+    width: 650px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+
     font-family: Arial, sans-serif;
-    font-size: 30px;
+    font-size: 28px;
+}
+
+.message {
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+    color: white;
+    animation: appear 0.2s ease-out;
+}
+
+.user {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="chat">CHAT TEST</div>
+<div id="chat"></div>
 
 <script>
 moblin.publish({ videoPlaying: true });
-
 moblin.subscribe({ chat: {} });
 
+const chat = document.getElementById("chat");
+
 moblin.onmessage = function(message) {
-    document.getElementById("chat").innerText =
-        "MESSAGE: " + JSON.stringify(message);
+
+    if (!message.chat) return;
+
+    const user = message.chat.user || "";
+
+    const text = (message.chat.segments || [])
+        .map(function(segment) {
+            return segment.text || "";
+        })
+        .join("");
+
+    if (!text) return;
+
+    const item = document.createElement("div");
+    item.className = "message";
+
+    const username = document.createElement("span");
+    username.className = "user";
+    username.textContent = user + ":";
+
+    item.appendChild(username);
+    item.appendChild(
+        document.createTextNode(" " + text)
+    );
+
+    chat.appendChild(item);
+
+    while (chat.children.length > 6) {
+        chat.removeChild(chat.firstChild);
+    }
 };
 </script>
 
