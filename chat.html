@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
 <style>
 html, body {
     margin: 0;
@@ -11,7 +10,6 @@ html, body {
     height: 1080px;
     background: transparent;
     overflow: hidden;
-    font-family: Arial, sans-serif;
 }
 
 #chat {
@@ -19,79 +17,25 @@ html, body {
     right: 60px;
     bottom: 60px;
     width: 500px;
-}
-
-.message {
-    margin-top: 12px;
-    font-size: 32px;
-    line-height: 1.25;
     color: white;
-    text-shadow: 2px 2px 4px black;
-    animation: enter .25s ease-out;
-}
-
-.name {
-    font-weight: bold;
-}
-
-@keyframes enter {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    font-family: Arial, sans-serif;
 }
 </style>
 </head>
 
 <body>
-
-<div id="chat"></div>
+<div id="chat">CHAT TEST</div>
 
 <script>
-
-moblin.subscribe({
-    chat: {}
-});
+moblin.subscribe({ chat: {} });
 
 moblin.onmessage = function(message) {
-
-    console.log(message);
-
-    if (!message.chat) return;
-
-    const chat = document.getElementById("chat");
-
-    const row = document.createElement("div");
-    row.className = "message";
-
-    row.innerHTML =
-        '<span class="name">' +
-        message.chat.username +
-        '</span>: ' +
-        message.chat.message;
-
-    chat.appendChild(row);
-
-    while (chat.children.length > 6) {
-        chat.firstChild.remove();
+    if (message.chat !== undefined) {
+        document.getElementById("chat").innerText =
+            message.chat.user + ": " +
+            message.chat.segments.map(x => x.text || "").join("");
     }
-
-    setTimeout(function() {
-        if (row.parentNode) {
-            row.style.opacity = "0";
-            row.style.transition = "opacity .5s";
-            setTimeout(function() {
-                row.remove();
-            }, 500);
-        }
-    }, 15000);
 };
-
 </script>
-
 </body>
 </html>
