@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 1920px;
+    height: 1080px;
+    background: transparent;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#chat {
+    position: absolute;
+    right: 60px;
+    bottom: 60px;
+    width: 500px;
+}
+
+.message {
+    margin-top: 12px;
+    font-size: 32px;
+    line-height: 1.25;
+    color: white;
+    text-shadow:
+        2px 2px 4px black,
+        -2px -2px 4px black,
+        2px -2px 4px black,
+        -2px 2px 4px black;
+
+    animation: enter 0.25s ease-out;
+}
+
+.name {
+    font-weight: 700;
+}
+
+@keyframes enter {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="chat"></div>
+
+<script>
+
+moblin.subscribe({
+    chat: {}
+});
+
+moblin.onmessage = function(message) {
+
+    if (!message.chat) return;
+
+    const chat = document.getElementById("chat");
+
+    const row = document.createElement("div");
+    row.className = "message";
+
+    row.innerHTML =
+        '<span class="name">' +
+        message.chat.username +
+        '</span>: ' +
+        message.chat.message;
+
+    chat.appendChild(row);
+
+    while (chat.children.length > 6) {
+        chat.removeChild(chat.firstChild);
+    }
+
+    setTimeout(() => {
+        if (row.parentNode) {
+            row.style.opacity = "0";
+            row.style.transition = "opacity 0.5s";
+            setTimeout(() => row.remove(), 500);
+        }
+    }, 15000);
+};
+
+</script>
+
+</body>
+</html>
